@@ -3,6 +3,7 @@ var path = require('path');
 var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+const PORT = process.env.PORT || 3000;
 
 var app = express();
 
@@ -39,6 +40,6 @@ app.use(function(req,res){
     res.status(404).render("404");
 });
 
-http.createServer(app).listen(3000, () => {
+http.createServer(app).listen(PORT, () => {
     console.log("Guestbook app started on 3000");
 });
