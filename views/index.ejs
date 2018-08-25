@@ -1,0 +1,13 @@
+<html>
+<body>
+    <a href="/create">Create New</a>
+    <% if (entries.length) { %>
+    <% entries.forEach(function(item) { %>
+        <li>
+        <%= item.name %> 
+        <%= item.message %> 
+        </li>
+    <% })} %>
+</body>
+</html>
+
