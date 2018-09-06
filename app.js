@@ -18,7 +18,7 @@ MongoClient.connect(MONGODB_URI, {useNewUrlParser: true},function(err, client) {
         return;
     }
     console.log("Connected to mongodb server.");
-    db = client.db('express-guestbook');
+    db = client.db(process.env.MONGODB_DB);
 });
 
 app.set("view engine", "ejs");
