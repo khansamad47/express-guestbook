@@ -3,13 +3,23 @@ var path = require('path');
 var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
 const PORT = process.env.PORT || 3000;
+const MONGODB_URI=process.env.MONGODB_URI;
 
 var app = express();
+var db;
 
-var entries = [];
-
-app.locals.entries = entries;
+console.log("Attempt to connect to", MONGODB_URI);
+MongoClient.connect(MONGODB_URI, {useNewUrlParser: true},function(err, client) {
+    if (err !== null) {
+        console.log("Failed to connect to db. err=", err);
+        return;
+    }
+    console.log("Connected to mongodb server.");
+    db = client.db('express-guestbook');
+});
 
 app.set("view engine", "ejs");
 
@@ -19,7 +29,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get("/", function(req,res) {
     console.log("Request", req.body);
-    res.render("index");
+    db.collection('posts').find().toArray(function(err,docs) {
+        res.render("index", {entries : docs}); });
 });
 
 app.get("/create", function(req,res) {
@@ -32,7 +43,7 @@ app.post("/create", function(req,res) {
     if (req.body.name === "" || req.body.message === "") {
         res.send("name or message was empty!");
     }
-    entries.push(req.body);
+    db.collection('posts').insert(req.body);
     res.send("Saved!");
 });
 
